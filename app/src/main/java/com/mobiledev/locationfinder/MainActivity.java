@@ -49,12 +49,15 @@ public class MainActivity extends AppCompatActivity implements Adapter.MyViewHol
     }
 
     public void fetchAllLocations(){
+        //Get a cursor with all the data in the database 
         Cursor cursor = db.readAllData();
         this.locationsList = new ArrayList<>();
+        //If DB is empty then call the createdata method which starts the initialpopulation
         if (cursor.getCount() == 0){
             createData();
         }
         else {
+            //If data returned add into it an arraylist of Location objects 
             while (cursor.moveToNext()){
                 Location location = new Location();
                 location.setId(cursor.getString(0));
@@ -73,12 +76,14 @@ public class MainActivity extends AppCompatActivity implements Adapter.MyViewHol
         List<Address> address;
         String calculatedAddress = "";
         Geocoder coder = new Geocoder(this);
+        //Iterate over the incoming LatLng arraylist to extract the coordinates and geocode to get the address
         for (int i = 0; i < 50 ; i++){
             try {
                 double latitude = locationsList.get(i).latitude;
                 double longitude = locationsList.get(i).longitude;
                 address = coder.getFromLocation(latitude, longitude, 2);
                 calculatedAddress = address.get(0).getAddressLine(0).toString();
+                //Save the address, lat, long into the database 
                 db.saveLocation(calculatedAddress, Double.toString(latitude), Double.toString(longitude));
 
             } catch (IOException e){
@@ -89,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.MyViewHol
     }
 
     private void populateRecyclerView(){
-        //Instantiate RecyclerView
+        //Instantiate RecyclerView and set the adapter 
         this.recyclerView = findViewById(R.id.recycler_view);
         adapter = new Adapter(this, MainActivity.this, locationsList, this);
         recyclerView.setAdapter(adapter);
@@ -98,8 +103,10 @@ public class MainActivity extends AppCompatActivity implements Adapter.MyViewHol
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        //Set up the menubar using menu.xml
         getMenuInflater().inflate(R.menu.menu, menu);
 
+        //Used to set the SearchView 
         MenuItem searchItem = menu.findItem(R.id.search_locations);
         SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setQueryHint("Search Addresses");
@@ -111,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.MyViewHol
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                //Uses the getFilter method in the adapter to filter the list of locations on search query change
                 adapter.getFilter().filter(newText);
                 return false;
             }
@@ -122,12 +130,13 @@ public class MainActivity extends AppCompatActivity implements Adapter.MyViewHol
     @SuppressLint("NonConstantResourceId")
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        //Sets action for the menubar
         switch (item.getItemId()){
-
             case R.id.search_locations:
                 Toast.makeText(this, "Search", Toast.LENGTH_LONG ).show();
                 break;
             case R.id.action_add_location:
+                //Starts the adding location activity
                 Intent intent = new Intent(this, AddLocationActivity.class);
                 startActivity(intent);
                 break;
@@ -138,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements Adapter.MyViewHol
 
     @Override
     public void onNoteClick(int position) {
+        //Starts the updating location activity and passes the existing record's data
         Intent intent = new Intent(this, UpdateLocationActivity.class);
         intent.putExtra("id", locationsList.get(position).getId());
         intent.putExtra("address", locationsList.get(position).getAddress());

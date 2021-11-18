@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         this.context = context;
     }
 
+    //Creates the initial database table
     @Override
     public void onCreate(SQLiteDatabase db) {
         String query = "CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" + COL_1 + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -36,6 +37,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    //Allows saving to the database
     public long saveLocation(String address, String latitude, String longitude){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();
@@ -45,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(TABLE_NAME, null, cv);
     }
 
+    //Reads from the database and returns a Cursor object with all the data
     public Cursor readAllData(){
         String query = "SELECT * FROM " + TABLE_NAME;
         SQLiteDatabase db = getReadableDatabase();
@@ -56,11 +59,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
+    //Deletes a location from the db using the id
     public void deleteLocation(String id){
         SQLiteDatabase db = getWritableDatabase();
         db.delete(TABLE_NAME, "id=?", new String[]{id});
     }
 
+    //Updates a location in the db using the id
     public boolean updateNote(String id, String address, String latitude, String longitude){
         SQLiteDatabase db = getWritableDatabase();
         ContentValues cv = new ContentValues();

@@ -164,6 +164,7 @@ public class UpdateLocationActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_delete_location) {
+            //Creates an alert asking the user to confirm if they want to delete
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setCancelable(true);
             builder.setTitle("Delete Note");
@@ -187,6 +188,7 @@ public class UpdateLocationActivity extends AppCompatActivity {
     }
 
     public void deleteLocation(){
+        //calls the database to delete the record using the id
         db.deleteLocation(id);
         Toast.makeText(this, "Location Deleted", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, MainActivity.class);
@@ -194,6 +196,7 @@ public class UpdateLocationActivity extends AppCompatActivity {
     }
 
     public boolean validLatitude (double latitude){
+        //Checks if the latitude input is valid
         boolean result = (latitude >=-90 && latitude <= 90);
         if (result == false){
             Toast.makeText(this, "Invalid: Latitude must be Greater/Equal than -90 and Less/Equal than 90", Toast.LENGTH_SHORT).show();
@@ -202,6 +205,7 @@ public class UpdateLocationActivity extends AppCompatActivity {
     }
 
     public boolean validLongitude (double longitude){
+        //Checks if the longitude input is valid
         boolean result = (longitude >=-180 && longitude <= 180);
         if (result == false){
             Toast.makeText(this, "Invalid: Longitude must be Greater/Equal than -180 and Less/Equal than 180", Toast.LENGTH_SHORT).show();
@@ -212,7 +216,7 @@ public class UpdateLocationActivity extends AppCompatActivity {
     public LatLng getLatLongFromAddress(String strAddress){
         List<Address> address;
         LatLng p1 = null;
-
+        //Gets the lat-long coordinates using a physical address and sends it back
         try {
             address = coder.getFromLocationName(strAddress,2);
             if (address == null){
@@ -231,7 +235,7 @@ public class UpdateLocationActivity extends AppCompatActivity {
     public String getAddressFromLatLong (double latitude, double longitude){
         List<Address> address;
         String calculatedAddress = "";
-
+        //Gets the physical address using a pair of coordinates and sends it back
         try {
             address = coder.getFromLocation(latitude, longitude, 2);
             if (address == null){
@@ -247,9 +251,11 @@ public class UpdateLocationActivity extends AppCompatActivity {
     }
 
     public void updateLocationOnClick(View view) {
+        //Checks to ensure that all fields arent empty before saving
         if (TextUtils.isEmpty(addressInput.getText().toString().trim()) && TextUtils.isEmpty(latInput.getText().toString().trim()) && TextUtils.isEmpty(longInput.getText().toString())){
             Toast.makeText(this, "Enter data into fields", Toast.LENGTH_SHORT).show();
         } else {
+            //If the address field is populated then get its value and call appropriate methods to update the db
             if(!addressInput.getText().toString().equals("")){
                 LatLng calculatedLatLng = getLatLongFromAddress(addressInput.getText().toString());
                 while (calculatedLatLng == null){
@@ -261,10 +267,12 @@ public class UpdateLocationActivity extends AppCompatActivity {
                 updateLocation(id, addressInput.getText().toString().trim(), latitudeResult, longitudeResult);
             }
             else {
+                //Checks whether either of the Lat-Long coordinates is empty, if so prompt user to enter both
                 if((latInput.getText().toString().equals("") && !longInput.getText().toString().equals("")) || (!latInput.getText().toString().equals("") && longInput.getText().toString().equals(""))){
                     Toast.makeText(this, "Please make sure both Latitude and Longitude is entered!", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    //get the value of the coordinates input by the user, validate them and then call the appropriate method to save it to db
                     double latitudeInput = Double.parseDouble(latInput.getText().toString().trim());
                     double longitudeInput = Double.parseDouble(longInput.getText().toString().trim());
 
@@ -284,6 +292,7 @@ public class UpdateLocationActivity extends AppCompatActivity {
     }
 
     public void updateLocation(String id, String address, String latitude, String longitude){
+        //Updates the database with the parameters sent in and navigates user back to mainactivity 
         boolean result = db.updateNote(id, address, latitude, longitude);
         if (result) {
             Toast.makeText(this, "Updated!", Toast.LENGTH_SHORT).show();

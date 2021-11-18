@@ -136,9 +136,11 @@ public class AddLocationActivity extends AppCompatActivity {
     }
 
     public void saveLocationOnClick(View view) {
+        //Check to make sure all fields arent empty
         if (TextUtils.isEmpty(addressInput.getText().toString().trim()) && TextUtils.isEmpty(latInput.getText().toString().trim()) && TextUtils.isEmpty(longInput.getText().toString())){
             Toast.makeText(this, "Enter data into fields", Toast.LENGTH_SHORT).show();
         } else {
+            //If address field has data then get the address, call the method to geocode and get coordinates and call the method to save it in db
             if(!addressInput.getText().toString().equals("")){
                 LatLng calculatedLatLng = getLatLongFromAddress(addressInput.getText().toString());
                 while (calculatedLatLng == null){
@@ -150,10 +152,12 @@ public class AddLocationActivity extends AppCompatActivity {
                 saveLocation(addressInput.getText().toString().trim(), latitudeResult, longitudeResult);
             }
             else {
+                //Check if both Lat-Long fields arent empty
                 if((latInput.getText().toString().equals("") && !longInput.getText().toString().equals("")) || (!latInput.getText().toString().equals("") && longInput.getText().toString().equals(""))){
                     Toast.makeText(this, "Please make sure both Latitude and Longitude is entered!", Toast.LENGTH_SHORT).show();
                 }
                 else{
+                    //Validate the Lat-Long coordinates given by the user, parses all the fields and calls the method to save it to db
                     double latitudeInput = Double.parseDouble(latInput.getText().toString().trim());
                     double longitudeInput = Double.parseDouble(longInput.getText().toString().trim());
 
@@ -174,6 +178,7 @@ public class AddLocationActivity extends AppCompatActivity {
     }
 
     public void saveLocation(String address, String latitude, String longitude){
+        //Saves data to the database using method
         long result = db.saveLocation(address, latitude, longitude);
         if (result == -1){
             Toast.makeText(this, "Location Save Failed" , Toast.LENGTH_SHORT).show();
@@ -186,6 +191,7 @@ public class AddLocationActivity extends AppCompatActivity {
     }
 
     public boolean validLatitude (double latitude){
+        //Validate if the latitude is within range
         boolean result = (latitude >=-90 && latitude <= 90);
         if (result == false){
             Toast.makeText(this, "Invalid: Latitude must be Greater/Equal than -90 and Less/Equal than 90", Toast.LENGTH_SHORT).show();
@@ -194,6 +200,7 @@ public class AddLocationActivity extends AppCompatActivity {
     }
 
     public boolean validLongitude (double longitude){
+        //Validate if the longitude is within range
         boolean result = (longitude >=-180 && longitude <= 180);
         if (result == false){
             Toast.makeText(this, "Invalid: Longitude must be Greater/Equal than -180 and Less/Equal than 180", Toast.LENGTH_SHORT).show();
@@ -204,7 +211,7 @@ public class AddLocationActivity extends AppCompatActivity {
     public LatLng getLatLongFromAddress( String strAddress){
         List<Address> address;
         LatLng p1 = null;
-
+        //Takes the input physical address and uses Geocode to get the Lat-Long pair
         try {
             address = coder.getFromLocationName(strAddress,2);
             if (address == null){
@@ -223,7 +230,7 @@ public class AddLocationActivity extends AppCompatActivity {
     public String getAddressFromLatLong (double latitude, double longitude){
         List<Address> address;
         String calculatedAddress = "";
-
+        //Takes the input Lat-Long pair and uses Geocode to get the physical address
         try {
             address = coder.getFromLocation(latitude, longitude, 2);
             if (address == null){
