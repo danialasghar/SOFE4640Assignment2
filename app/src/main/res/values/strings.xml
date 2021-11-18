@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">LocationFinder</string>
+    <string name="add_new_location">Add new location</string>
+    <string name="add_a_location">Add a Location</string>
+    <string name="enter_address_here">Enter Address Here</string>
+    <string name="enter_longitude_field">Enter Longitude</string>
+    <string name="enter_latitude_field">Enter Latitude</string>
+    <string name="save_location">Save Location</string>
+    <string name="title">Title</string>
+    <string name="latitude">Latitude</string>
+    <string name="longitude">Longitude</string>
+    <string name="update_location">Update Location</string>
+    <string name="delete_location">Delete Location</string>
+</resources>

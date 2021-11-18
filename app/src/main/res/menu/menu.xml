@@ -1,0 +1,15 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_add_location"
+        android:icon="@drawable/ic_baseline_add_location_24"
+        android:title="@string/add_new_location"
+        app:showAsAction="ifRoom"/>
+
+    <item
+        android:id="@+id/search_locations"
+        android:icon="@drawable/ic_baseline_search_24"
+        android:title="Search Locations"
+        app:showAsAction="always"
+        app:actionViewClass="androidx.appcompat.widget.SearchView" />
+</menu>
